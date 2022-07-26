@@ -28,21 +28,31 @@ public class CustomerController {
     }
     @PostMapping("/add")
     private ResponseEntity<Customer> addCustomer(@RequestBody Customer customer){
-        return ResponseEntity.status(HttpStatus.CREATED).body(cServ.createOrUpdateCustomer(customer));
+        try {
+            return ResponseEntity.status(HttpStatus.CREATED).body(cServ.createCustomer(customer));
+        } catch (Exception e) {
+            return ResponseEntity.status(409).body(null);
+        }
     }
     @PutMapping("/update")
-    private Customer updateCustomer(@RequestBody Customer customer){
+    private ResponseEntity<Customer> updateCustomer(@RequestBody Customer customer){
         Customer updatedCustomer=cServ.getByAccountNumber(customer.getCustomerAccNum());
-        customer.setCustomerBalance(customer.getCustomerBalance());
-        return cServ.createOrUpdateCustomer(updatedCustomer);
+        updatedCustomer.setCustomerBalance(customer.getCustomerBalance());
+        try {
+            return ResponseEntity.status(204).body(cServ.updateCustomer(updatedCustomer));
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(null);
+        }
     }
     @DeleteMapping("/remove")
     private ResponseEntity<String> deleteCustomer(@RequestBody Customer customer){
         try {
-            cServ.deleteCustomer(customer);
+            Customer customerToDelete=cServ.getByAccountNumber(customer.getCustomerAccNum());
+            cServ.deleteCustomer(customerToDelete);
+            return ResponseEntity.status(HttpStatus.OK).body("Customer Deleted");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("That customer doesn't exist");
         }
-        return ResponseEntity.status(HttpStatus.OK).body("Customer Deleted");
+
     }
 }

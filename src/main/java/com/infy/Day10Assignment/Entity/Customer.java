@@ -18,7 +18,6 @@ public class Customer {
     @Column(name = "customer_address")
     private String customerAddress;
 
-    @GeneratedValue
     @Column(name = "customer_account_num", unique = true)
     private Long customerAccNum;
     @Column(name = "customer_balance")

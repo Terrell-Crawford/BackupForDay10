@@ -18,8 +18,10 @@ public class CustomerService{
         this.cRepo=cRepo;
     }
 
-    public Customer createOrUpdateCustomer(Customer customer){
-        return cRepo.save(customer);
+    public Customer createCustomer(Customer customer) throws Exception {
+        if(customer.getCustomerId()!=null|| cRepo.getCustomerByAccNum(customer.getCustomerAccNum())!=null || customer.getCustomerAccNum()==null){
+            throw new Exception();
+        }else return cRepo.save(customer);
     }
 
     public Customer updateCustomer(Customer customer) throws Exception {
@@ -28,10 +30,10 @@ public class CustomerService{
         }else return cRepo.save(customer);
     }
     public void deleteCustomer(Customer customer) throws Exception {
-
-        if(customer.getCustomerId()==null || !cRepo.findById(customer.getCustomerId()).isPresent()){
+       Customer customerToDelete=cRepo.getCustomerByAccNum(customer.getCustomerAccNum());
+        if(customerToDelete.getCustomerId()==null || !cRepo.findById(customerToDelete.getCustomerId()).isPresent()){
             throw new Exception();
-        }else{cRepo.delete(customer);}
+        }else{cRepo.delete(customerToDelete);}
     }
     public Customer getCustomerById(Integer id){
         return cRepo.getReferenceById(id);
