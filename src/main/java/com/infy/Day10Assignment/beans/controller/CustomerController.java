@@ -38,6 +38,10 @@ public class CustomerController {
     private ResponseEntity<Customer> updateCustomer(@RequestBody Customer customer){
         Customer updatedCustomer=cServ.getByAccountNumber(customer.getCustomerAccNum());
         updatedCustomer.setCustomerBalance(customer.getCustomerBalance());
+        updatedCustomer.setCustomerName(customer.getCustomerName());
+        updatedCustomer.setCustomerNo(customer.getCustomerNo());
+        updatedCustomer.setCustomerAddress(customer.getCustomerAddress());
+        updatedCustomer.setCustomerEmailId(customer.getCustomerEmailId());
         try {
             return ResponseEntity.status(204).body(cServ.updateCustomer(updatedCustomer));
         } catch (Exception e) {
