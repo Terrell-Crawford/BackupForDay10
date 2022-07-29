@@ -2,12 +2,12 @@ package com.infy.Day10Assignment.beans.controller;
 
 import com.infy.Day10Assignment.Entity.Customer;
 import com.infy.Day10Assignment.beans.service.CustomerService;
-import com.infy.Day10Assignment.dto.CustomerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,15 +19,33 @@ public class CustomerController {
         this.cServ=cServ;
     }
     @GetMapping("/details")
-    private List<Long> getAllBalances(){
+    private ResponseEntity<List<Long>> getAllBalances(){
         List<Long> balances= new ArrayList<>();
         for(Customer c: cServ.getAllCustomers()){
             balances.add(c.getCustomerBalance());
         }
-        return balances;
+        return ResponseEntity.status(200).body(balances);
+    }
+    @GetMapping("/id/{id}")
+    private ResponseEntity<Customer> getCustomerById(@PathVariable Integer id){
+        try {
+            return ResponseEntity.status(HttpStatus.FOUND).body(cServ.getById(id));
+        } catch (Exception e) {
+            System.out.println("No customer with id "+ id +" exists!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
+    }
+    @GetMapping("/acc/{accNum}")
+    private ResponseEntity<Customer> getCustomerByAccountNumber(@PathVariable Long accNum){
+        try {
+            return ResponseEntity.status(HttpStatus.FOUND).body(cServ.getByAccountNumber(accNum));
+        } catch (Exception e) {
+             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
     @PostMapping("/add")
-    private ResponseEntity<Customer> addCustomer(@RequestBody Customer customer){
+    private ResponseEntity<Customer> addCustomer(@Valid @RequestBody Customer customer){
         try {
             return ResponseEntity.status(HttpStatus.CREATED).body(cServ.createCustomer(customer));
         } catch (Exception e) {
@@ -35,21 +53,22 @@ public class CustomerController {
         }
     }
     @PutMapping("/update")
-    private ResponseEntity<Customer> updateCustomer(@RequestBody Customer customer){
+    private ResponseEntity<Customer> updateCustomer(@Valid @RequestBody Customer customer){
+       try{
         Customer updatedCustomer=cServ.getByAccountNumber(customer.getCustomerAccNum());
         updatedCustomer.setCustomerBalance(customer.getCustomerBalance());
         updatedCustomer.setCustomerName(customer.getCustomerName());
         updatedCustomer.setCustomerNo(customer.getCustomerNo());
         updatedCustomer.setCustomerAddress(customer.getCustomerAddress());
         updatedCustomer.setCustomerEmailId(customer.getCustomerEmailId());
-        try {
+
             return ResponseEntity.status(204).body(cServ.updateCustomer(updatedCustomer));
         } catch (Exception e) {
             return ResponseEntity.status(400).body(null);
         }
     }
     @DeleteMapping("/remove")
-    private ResponseEntity<String> deleteCustomer(@RequestBody Customer customer){
+    private ResponseEntity<String> deleteCustomer(@Valid @RequestBody Customer customer){
         try {
             Customer customerToDelete=cServ.getByAccountNumber(customer.getCustomerAccNum());
             cServ.deleteCustomer(customerToDelete);

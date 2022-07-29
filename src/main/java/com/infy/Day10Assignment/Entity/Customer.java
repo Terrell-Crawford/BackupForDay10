@@ -1,6 +1,10 @@
 package com.infy.Day10Assignment.Entity;
 
+
+
 import javax.persistence.*;
+import javax.validation.constraints.*;
+
 
 @Entity
 @Table(name = "customers")
@@ -9,15 +13,18 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id")
     private Integer customerId;
+
     @Column(name = "customer_name")
+    @NotBlank(message = "Name can't be empty")
     private String customerName;
     @Column(name = "customer_phone")
     private String customerNo;
+    @Email
     @Column(name = "customer_email")
     private String customerEmailId;
     @Column(name = "customer_address")
     private String customerAddress;
-
+    @NotNull
     @Column(name = "customer_account_num", unique = true)
     private Long customerAccNum;
     @Column(name = "customer_balance")
