@@ -29,7 +29,7 @@ public class CustomerController {
     @GetMapping("/id/{id}")
     private ResponseEntity<Customer> getCustomerById(@PathVariable Integer id){
         try {
-            return ResponseEntity.status(HttpStatus.FOUND).body(cServ.getById(id));
+            return ResponseEntity.status(HttpStatus.OK).body(cServ.getById(id));
         } catch (Exception e) {
             System.out.println("No customer with id "+ id +" exists!");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -39,7 +39,7 @@ public class CustomerController {
     @GetMapping("/acc/{accNum}")
     private ResponseEntity<Customer> getCustomerByAccountNumber(@PathVariable Long accNum){
         try {
-            return ResponseEntity.status(HttpStatus.FOUND).body(cServ.getByAccountNumber(accNum));
+            return ResponseEntity.status(HttpStatus.OK).body(cServ.getByAccountNumber(accNum));
         } catch (Exception e) {
              return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
